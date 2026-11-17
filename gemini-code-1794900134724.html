@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kamus Bahasa Bugis — Ahmad Musyahid Ahsan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Buginese&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc;
+    }
+    .font-lontara {
+      font-family: 'Noto Sans Buginese', sans-serif;
+      line-height: 1.9;
+      letter-spacing: 0.04em;
+    }
+    .tab-active {
+      background-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+  </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white border-b border-emerald-800/40 sticky top-0 z-30 shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full">
+            Basa Ugi • Lontara 23 Ina Sura'
+          </span>
+          <span id="totalBadge" class="px-2.5 py-0.5 text-xs font-semibold bg-slate-800 text-slate-300 rounded-full">
+            Memuat leksikon...
+          </span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight mt-1">
+          Kamus Bahasa Bugis <span class="text-emerald-400">Ahmad Musyahid Ahsan</span>
+        </h1>
+        <p class="text-xs md:text-sm text-slate-300 mt-0.5">
+          Edisi Pribadi • Leksikon Terverifikasi (Rujukan M. Ide Said DM & B.F. Matthes) • Penerjemah Multi-Kalimat
+        </p>
+      </div>
+
+      <!-- Navigasi Tab -->
+      <nav class="flex flex-wrap gap-1.5 bg-slate-800/90 p-1.5 rounded-xl border border-slate-700/80">
+        <button onclick="switchTab('kamus')" id="btn-tab-kamus" class="tab-active px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold transition">
+          📖 Kamus Kosakata
+        </button>
+        <button onclick="switchTab('penerjemah')" id="btn-tab-penerjemah" class="text-slate-300 hover:text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold transition">
+          🔄 Penerjemah Kalimat
+        </button>
+        <button onclick="switchTab('sinkron')" id="btn-tab-sinkron" class="text-slate-300 hover:text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold transition">
+          🌐 Sinkronisasi & Korpus
+        </button>
+        <button onclick="switchTab('kuis')" id="btn-tab-kuis" class="text-slate-300 hover:text-white px-3.5 py-2 rounded-lg text-xs md:text-sm font-bold transition">
+          🎯 Latihan & Kuis
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-6xl w-full mx-auto px-4 py-6 flex-1">
+
+    <!-- ==================== TAB 1: KAMUS KOSAKATA ==================== -->
+    <section id="tab-kamus" class="space-y-6">
+      <!-- Bar Pencarian & Filter -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+          <div class="md:col-span-6 relative">
+            <input type="text" id="searchInput" oninput="renderKamus()" placeholder="Cari kata Bugis atau Indonesia (misal: laleng, lalo, manre, makan, dalam, lewat)..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm" />
+            <span class="absolute left-3.5 top-3.5 text-slate-400">🔍</span>
+          </div>
+          <div class="md:col-span-3">
+            <select id="categoryFilter" onchange="renderKamus()" class="w-full px-3.5 py-3 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+              <option value="ALL">Semua Kategori</option>
+              <option value="Arah & Ruang">Arah, Ruang & Posisi</option>
+              <option value="Kata Kerja">Kata Kerja (Verba)</option>
+              <option value="Kata Sifat">Kata Sifat (Adjektiva)</option>
+              <option value="Kata Benda">Kata Benda & Alam</option>
+              <option value="Sapaan & Pronomina">Sapaan & Pronomina</option>
+              <option value="Sastra & Filosofi">Sastra, Perasaan & Filosofi</option>
+              <option value="Bilangan & Waktu">Bilangan & Waktu</option>
+              <option value="Korpus Tambahan">Korpus Sinkronisasi</option>
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <select id="sourceFilter" onchange="renderKamus()" class="w-full px-3.5 py-3 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none">
+              <option value="ALL">Semua Sumber Data</option>
+              <option value="M. Ide Said DM">Kamus M. Ide Said DM</option>
+              <option value="B.F. Matthes">Leksikon B.F. Matthes</option>
+              <option value="Korpus Eksternal">Korpus Sinkronisasi / Pribadi</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Indeks Huruf -->
+        <div id="alphabetBar" class="flex flex-wrap gap-1 pt-1 border-t border-slate-100"></div>
+      </div>
+
+      <!-- Catatan Akurasi Leksikon Penting -->
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="text-xs md:text-sm text-amber-900">
+          <span class="font-bold">⚠️ Catatan Akurasi Basa Ugi:</span>
+          <strong>laleng / ri laleng</strong> (<span class="font-lontara text-base">ᨒᨒᨛ / ᨑᨗ ᨒᨒᨛ</span>) = <em>dalam / di dalam / jalan</em>, sedangkan
+          <strong>lalo / mallalo</strong> (<span class="font-lontara text-base">ᨒᨒᨚ / ᨆᨒᨒᨚ</span>) = <em>lewat / melintas / berlalu</em>.
+        </div>
+        <button onclick="document.getElementById('searchInput').value='laleng'; renderKamus();" class="shrink-0 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg transition">
+          Cek Perbandingan
+        </button>
+      </div>
+
+      <!-- Hasil Kartu Kamus -->
+      <div class="flex items-center justify-between">
+        <p id="resultCount" class="text-sm font-semibold text-slate-600">Menampilkan kosakata...</p>
+        <button onclick="openAddModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition">
+          + Tambah Entri Manual
+        </button>
+      </div>
+
+      <div id="kamusGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ==================== TAB 2: PENERJEMAH KALIMAT ==================== -->
+    <section id="tab-penerjemah" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">Penerjemah Banyak Kalimat (Multi-Baris)</h2>
+            <p class="text-xs text-slate-500">Mendukung terjemahan frasa baku, pronomina Bugis, transkripsi Lontara 23 Ina Sura', dan input rekaman suara.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="translateDirection" onchange="runTranslator()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs md:text-sm font-bold text-slate-800">
+              <option value="ID_TO_BUG">Indonesia ➔ Bugis + Lontara</option>
+              <option value="BUG_TO_ID">Bugis ➔ Indonesia + Lontara</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- Kotak Input -->
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Teks Sumber (Bisa Banyak Kalimat)</label>
+              <div class="flex gap-1.5">
+                <button onclick="startVoiceInput('translatorInput')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition">
+                  🎙️ Rekam Suara
+                </button>
+                <button onclick="loadSampleParagraph()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">
+                  Isi Contoh Paragraf
+                </button>
+                <button onclick="document.getElementById('translatorInput').value=''; runTranslator();" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-lg text-xs font-bold transition">
+                  Hapus
+                </button>
+              </div>
+            </div>
+            <textarea id="translatorInput" oninput="runTranslator()" rows="7" placeholder="Ketik atau tempel beberapa kalimat sekaligus di sini...
+Contoh:
+Apa kabar saudara?
+Ibu ada di dalam rumah.
+Permisi, saya mau lewat sebentar." class="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 outline-none text-sm leading-relaxed"></textarea>
+          </div>
+
+          <!-- Kotak Output -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-bold uppercase tracking-wider text-emerald-700">Hasil Terjemahan & Aksara Lontara</label>
+              <div class="flex gap-1.5">
+                <button onclick="copyText('translatedLatin')" class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition">
+                  📋 Salin Latin
+                </button>
+                <button onclick="copyText('translatedLontara')" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition">
+                  📋 Salin Lontara
+                </button>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 min-h-[105px]">
+              <div class="text-[11px] font-bold uppercase text-emerald-700 mb-1">Terjemahan Latin:</div>
+              <div id="translatedLatin" class="text-sm md:text-base font-semibold text-slate-900 whitespace-pre-line">Hasil terjemahan akan muncul di sini...</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900 text-white border border-slate-800 min-h-[115px]">
+              <div class="text-[11px] font-bold uppercase text-emerald-400 mb-1">Transkripsi Aksara Lontara Bugis (23 Ina Sura'):</div>
+              <div id="translatedLontara" class="font-lontara text-xl md:text-2xl text-amber-300 whitespace-pre-line">ᨔᨒᨆ ᨆᨒᨛᨇᨘ</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analisis Kata per Kata -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Rincian Padanan Leksikon Kalimat</h3>
+          <div id="wordBreakdown" class="flex flex-wrap gap-2 text-xs text-slate-600">
+            Ketik kalimat di atas untuk melihat rincian terjemahan setiap kata dan frasa.
+          </div>
+        </div>
+      </div>
+
+      <!-- Koleksi Kalimat Percakapan Autentik -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <h3 class="text-base font-extrabold text-slate-900">Koleksi Kalimat Percakapan Basa Ugi (Klik untuk Uji Terjemahan)</h3>
+        <div id="phraseList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: SINKRONISASI & KORPUS ==================== -->
+    <section id="tab-sinkron" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Paket Korpus Siap Sinkronisasi -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">1. Paket Korpus Leksikon Multi-Sumber</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Tambahkan ratusan kosakata terkurasi dari berbagai ranah bahasa Bugis dalam satu klik.</p>
+          </div>
+          <div id="corpusPacksContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- Sinkronisasi Google Sheets / JSON URL & Pencarian Referensi -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">2. Sinkronisasi Google Sheets / File CSV & JSON</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Hubungkan database kosakata pribadi Anda dari Google Sheets (Publish to web sebagai CSV) atau tautan JSON.</p>
+          </div>
+          <div class="space-y-2.5">
+            <input type="url" id="externalUrlInput" placeholder="Tempel URL Google Sheets (.csv) atau JSON..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs md:text-sm outline-none focus:ring-2 focus:ring-emerald-500" />
+            <div class="flex flex-wrap gap-2">
+              <button onclick="syncFromExternalUrl()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition">
+                🔄 Sinkronkan URL Database
+              </button>
+              <button onclick="exportDatabaseJSON()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition">
+                ⬇️ Cadangkan Database (.JSON)
+              </button>
+            </div>
+            <p id="syncStatusMsg" class="text-xs text-slate-500"></p>
+          </div>
+
+          <hr class="border-slate-100" />
+
+          <!-- Verifikasi Silang ke Google / Literatur -->
+          <div class="space-y-2.5">
+            <h3 class="text-sm font-extrabold text-slate-900">3. Verifikasi Silang Sumber Kredibel (Google & Literatur)</h3>
+            <div class="flex gap-2">
+              <input type="text" id="googleVerifyInput" placeholder="Ketik kata Bugis/Indonesia untuk cek referensi..." class="flex-1 px-3.5 py-2 rounded-xl border border-slate-300 text-xs md:text-sm outline-none" />
+              <button onclick="searchExternalReference('google')" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl">Google</button>
+              <button onclick="searchExternalReference('scholar')" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl">Scholar</button>
+              <button onclick="searchExternalReference('wiki')" class="px-3 py-2 bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold rounded-xl">Wiki Bugis</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ekstraktor Teks Artikel / Media Sosial / Transkrip Rekaman -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">4. Ekstraktor Kosakata dari Tulisan, Media Sosial, & Rekaman</h2>
+            <p class="text-xs text-slate-500">Tempel teks status media sosial, kutipan lontara/sastra, atau dikte rekaman suara untuk mendeteksi kata baru dan menyimpannya ke kamus.</p>
+          </div>
+          <button onclick="startVoiceInput('rawCorpusText')" class="self-start px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition">
+            🎙️ Rekam Transkrip Suara
+          </button>
+        </div>
+        <textarea id="rawCorpusText" rows="4" placeholder="Tempel teks bahasa Bugis dari artikel, media sosial, atau hasil rekaman di sini..." class="w-full p-3.5 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+        <div class="flex gap-2">
+          <button onclick="extractNewWordsFromText()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition">
+            🔎 Pindai & Ekstrak Kosakata Baru
+          </button>
+        </div>
+        <div id="extractedWordsResult" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: KUIS ==================== -->
+    <section id="tab-kuis" class="hidden max-w-2xl mx-auto">
+      <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6 text-center">
+        <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
+          <span>Uji Pemahaman Basa Ugi</span>
+          <span id="quizScoreBadge" class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full">Skor: 0</span>
+        </div>
+        <div class="py-4 space-y-2">
+          <p class="text-xs text-slate-500">Apa arti dari kata Bahasa Bugis berikut?</p>
+          <h2 id="quizQuestionBugis" class="text-3xl font-extrabold text-slate-900">...</h2>
+          <div id="quizQuestionLontara" class="font-lontara text-3xl text-emerald-700">...</div>
+        </div>
+        <div id="quizOptions" class="grid grid-cols-1 gap-2.5 text-left"></div>
+        <div id="quizFeedback" class="text-sm font-bold min-h-[24px]"></div>
+        <button onclick="nextQuizQuestion()" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl transition">
+          Soal Berikutnya ➔
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL TAMBAH KOSAKATA MANUAL -->
+  <div id="addModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-lg font-extrabold text-slate-900">Tambah Kosakata Baru</h3>
+        <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-700 font-bold">✕</button>
+      </div>
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Kata Bahasa Bugis (Latin)</label>
+          <input type="text" id="newBugis" oninput="previewNewLontara()" placeholder="Contoh: mallalo" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 outline-none" />
+          <div class="mt-1 text-xs text-emerald-700">Pratinjau Lontara: <span id="newLontaraPreview" class="font-lontara text-lg font-bold">-</span></div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Arti Bahasa Indonesia</label>
+          <input type="text" id="newIndo" placeholder="Contoh: lewat, melintas" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Kategori</label>
+          <select id="newCategory" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white">
+            <option value="Kata Kerja">Kata Kerja (Verba)</option>
+            <option value="Kata Sifat">Kata Sifat (Adjektiva)</option>
+            <option value="Kata Benda">Kata Benda & Alam</option>
+            <option value="Arah & Ruang">Arah, Ruang & Posisi</option>
+            <option value="Sapaan & Pronomina">Sapaan & Pronomina</option>
+            <option value="Sastra & Filosofi">Sastra, Perasaan & Filosofi</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Contoh Kalimat (Bugis — Indonesia)</label>
+          <input type="text" id="newExample" placeholder="Contoh: Tabe', maeloka' mallalo — Permisi, saya mau lewat" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 outline-none" />
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100">Batal</button>
+        <button onclick="saveNewWord()" class="px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white">Simpan ke Kamus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-5 mt-10 border-t border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="font-semibold text-slate-200">© 2026 Kamus Bahasa Bugis — Ahmad Musyahid Ahsan</p>
+      <p>Rujukan Utama: Kamus Bahasa Bugis–Indonesia (M. Ide Said DM, Depdikbud) & Boegineesch-Hollandsch Woordenboek (B.F. Matthes)</p>
+    </div>
+  </footer>
+
+  <script>
+    // ==================== 1. MESIN TRANSLITERASI LONTARA BUGIS (23 INA SURA') ====================
+    const LONTARA_BASE = {
+      'ngka': '\u1A03', 'mpa': '\u1A07', 'nra': '\u1A0B', 'nca': '\u1A0F',
+      'nga': '\u1A02', 'nya': '\u1A0E',
+      'ka': '\u1A00', 'ga': '\u1A01',
+      'pa': '\u1A04', 'ba': '\u1A05', 'ma': '\u1A06',
+      'ta': '\u1A08', 'da': '\u1A09', 'na': '\u1A0A',
+      'ca': '\u1A0C', 'ja': '\u1A0D',
+      'ya': '\u1A10', 'ra': '\u1A11', 'la': '\u1A12', 'wa': '\u1A13',
+      'sa': '\u1A14', 'a': '\u1A15', 'ha': '\u1A16'
+    };
+
+    const LONTARA_VOWELS = {
+      'a': '',
+      'i': '\u1A17',
+      'u': '\u1A18',
+      'é': '\u1A19',
+      'e': '\u1A1B',
+      'o': '\u1A1A'
+    };
+
+    function latinToLontara(text) {
+      if (!text) return '';
+      return text.split(/(\s+|[.,!?;:"()\-]+)/).map(token => {
+        if (!token || /^(\s+|[.,!?;:"()\-]+)$/.test(token)) {
+          if (token === ',') return ' \u1A1E ';
+          if (token === '.') return ' \u1A1F ';
+          return token;
+        }
+        let word = token.toLowerCase().replace(/['’`]/g, '');
+        let out = '';
+        let i = 0;
+        const clusters = ['ngka', 'mpa', 'nra', 'nca', 'nga', 'nya', 'ka', 'ga', 'pa', 'ba', 'ma', 'ta', 'da', 'na', 'ca', 'ja', 'ya', 'ra', 'la', 'wa', 'sa', 'ha'];
+
+        while (i < word.length) {
+          let matched = false;
+          // Cek konsonan + vokal
+          for (let c of clusters) {
+            let cons = c.slice(0, -1);
+            if (word.startsWith(cons, i)) {
+              let nextIdx = i + cons.length;
+              let v = word[nextIdx];
+              if (v && LONTARA_VOWELS.hasOwnProperty(v)) {
+                out += LONTARA_BASE[c] + LONTARA_VOWELS[v];
+                i = nextIdx + 1;
+                matched = true;
+                break;
+              } else {
+                // Konsonan mati (tidak ditulis dalam kaidah Lontara klasik, kecuali lompat ke suku kata berikutnya)
+                i += cons.length;
+                matched = true;
+                break;
+              }
+            }
+          }
+          if (!matched) {
+            let ch = word[i];
+            if (LONTARA_VOWELS.hasOwnProperty(ch)) {
+              out += LONTARA_BASE['a'] + LONTARA_VOWELS[ch];
+            }
+            i++;
+          }
+        }
+        return out || token;
+      }).join('');
+    }
+
+    // ==================== 2. DATABASE LEKSIKON TERVERIFIKASI (BASA UGI) ====================
+    const CORE_DICTIONARY = [
+      // --- ARAH, RUANG & POSISI (TERMASUK KOREKSI LALENG VS LALO) ---
+      { bugis: "laleng", indo: "dalam, di dalam; jalan", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Indo' engka ri laleng bola — Ibu ada di dalam rumah." },
+      { bugis: "ri laleng", indo: "di dalam", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Taro-i ri laleng patti — Simpanlah di dalam peti." },
+      { bugis: "lalo", indo: "lewat, melintas, berlalu", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Tabe', maeloka' lalo — Permisi, saya mau lewat." },
+      { bugis: "mallalo", indo: "lewat, berjalan melintas", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Engka tau mallalo ri olo bola — Ada orang lewat di depan rumah." },
+      { bugis: "salipeng", indo: "luar, di luar", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Mattajeng-i ri salipeng — Dia menunggu di luar." },
+      { bugis: "ri salipeng", indo: "di luar", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Mabbaris-i ri salipeng — Mereka berbaris di luar." },
+      { bugis: "ase'", indo: "atas", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Menre'-ko ri ase' — Naiklah ke atas." },
+      { bugis: "ri ase'", indo: "di atas", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Engka kitta' ri ase' mejang — Ada kitab di atas meja." },
+      { bugis: "awa", indo: "bawah", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Ri awa bola — Di bawah kolong rumah." },
+      { bugis: "ri awa", indo: "di bawah", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Cemme-i ri awa — Mandi di bawah." },
+      { bugis: "olo", indo: "depan, hadapan", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Ri olo-na — Di hadapannya." },
+      { bugis: "ri olo", indo: "di depan", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Tudang-ko ri olo — Duduklah di depan." },
+      { bugis: "munri", indo: "belakang", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Ri munri-na — Di belakangnya." },
+      { bugis: "ri munri", indo: "di belakang", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Accinong-ko ri munri — Menengoklah ke belakang." },
+      { bugis: "sedde", indo: "samping, pinggir", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Tudang ri sedde-ku — Duduk di sampingku." },
+      { bugis: "ataunna", indo: "kanan", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Lima atau — Tangan kanan." },
+      { bugis: "abiyo", indo: "kiri", cat: "Arah & Ruang", src: "M. Ide Said DM", ex: "Lima abiyo — Tangan kiri." },
+      { bugis: "manorang", indo: "utara", cat: "Arah & Ruang", src: "B.F. Matthes", ex: "Lao manorang — Pergi ke arah utara." },
+      { bugis: "maniang", indo: "selatan", cat: "Arah & Ruang", src: "B.F. Matthes", ex: "Lao maniang — Pergi ke arah selatan." },
+      { bugis: "alau'", indo: "timur", cat: "Arah & Ruang", src: "B.F. Matthes", ex: "Mompo esso ri alau' — Matahari terbit di timur." },
+      { bugis: "orai'", indo: "barat", cat: "Arah & Ruang", src: "B.F. Matthes", ex: "Labu esso ri orai' — Matahari terbenam di barat." },
+
+      // --- SAPAAN & PRONOMINA ---
+      { bugis: "iyya'", indo: "saya, aku", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Iyya' riyaseng Ahmad — Saya bernama Ahmad." },
+      { bugis: "idi'", indo: "Anda, kita (halus/hormat)", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Tegaki' maelo lao, idi'? — Ke mana Anda hendak pergi?" },
+      { bugis: "iko", indo: "kamu, engkau (akrab)", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Purano manre, iko? — Sudahkah kamu makan?" },
+      { bugis: "alena", indo: "dia, beliau", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Alena ritu guru-ku — Beliaulah guruku." },
+      { bugis: "mennang", indo: "mereka", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Lao maneng-ni mennang — Mereka semua sudah pergi." },
+      { bugis: "tabe'", indo: "permisi, maaf (sopan)", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Tabe', maeloka' makkutana — Permisi, saya ingin bertanya." },
+      { bugis: "iye'", indo: "iya, baik (halus)", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Iye', madeceng — Iya, baik." },
+      { bugis: "de'", indo: "tidak, bukan", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "De' na-engka — Tidak ada." },
+      { bugis: "aga kareba", indo: "apa kabar", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Aga kareba silessureng? — Apa kabar saudara?" },
+      { bugis: "kareba madeceng", indo: "kabar baik", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Alhamdulillah, kareba madeceng — Alhamdulillah, kabar baik." },
+      { bugis: "tarima kasi", indo: "terima kasih", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Tarima kasi maega — Terima kasih banyak." },
+      { bugis: "addampengengnga'", indo: "maafkan saya", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Tabe', addampengengnga' — Permisi, maafkan saya." },
+      { bugis: "silessureng", indo: "saudara, kerabat", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Pada-pada silessureng — Sesama saudara." },
+      { bugis: "sellao", indo: "teman, sahabat", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Sellao madeceng — Sahabat yang baik." },
+      { bugis: "indo'", indo: "ibu", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Indo'-ku — Ibuku." },
+      { bugis: "ambo'", indo: "ayah, bapak", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Ambo'-ku — Ayahku." },
+      { bugis: "ana'", indo: "anak", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Ana' macacca — Anak yang pintar." },
+      { bugis: "daeng", indo: "kakak (sapaan hormat)", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Aga kareba, Daeng? — Apa kabar, Kak?" },
+      { bugis: "anri'", indo: "adik", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Anri'-ku — Adikku." },
+      { bugis: "nene'", indo: "kakek, nenek", cat: "Sapaan & Pronomina", src: "M. Ide Said DM", ex: "Nene' mallomo — Nenek moyang." },
+
+      // --- KATA KERJA (VERBA) ---
+      { bugis: "manre", indo: "makan", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Laoni mai manre — Mari ke sini makan." },
+      { bugis: "minung", indo: "minum", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Minung wae mapella — Minum air hangat." },
+      { bugis: "lao", indo: "pergi", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Maeloka' lao ri pasa' — Saya mau pergi ke pasar." },
+      { bugis: "pole", indo: "datang, pulang dari", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Pole tegaki'? — Dari mana Anda?" },
+      { bugis: "lisu", indo: "pulang, kembali", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Maeloka' lisu ri bola — Saya mau pulang ke rumah." },
+      { bugis: "rewe'", indo: "kembali, pulang", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Rewe'-ni ri kampong-na — Dia sudah kembali ke kampungnya." },
+      { bugis: "tudang", indo: "duduk", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Tudang-ki' ri kadera-e — Silakan duduk di kursi." },
+      { bugis: "tettong", indo: "berdiri", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Tettong malempu' — Berdiri tegak/lurus." },
+      { bugis: "mattinro", indo: "tidur", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Maeloka' mattinro — Saya hendak tidur." },
+      { bugis: "moto'", indo: "bangun (tidur)", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Moto' maele' — Bangun pagi-pagi." },
+      { bugis: "jokka", indo: "berjalan, bepergian", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Jokka-jokka — Jalan-jalan." },
+      { bugis: "lari", indo: "berlari", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Lari masitta' — Berlari cepat." },
+      { bugis: "makkita", indo: "melihat", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Makkita-ka' bulu' — Saya melihat gunung." },
+      { bugis: "marengkalinga", indo: "mendengar", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Marengkalinga ada madeceng — Mendengar nasihat baik." },
+      { bugis: "mabbicara", indo: "berbicara", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Mabbicara Basa Ugi — Berbicara bahasa Bugis." },
+      { bugis: "makkutana", indo: "bertanya", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Maeloka' makkutana — Saya ingin bertanya." },
+      { bugis: "mappabali", indo: "menjawab", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Mappabali kutana — Menjawab pertanyaan." },
+      { bugis: "mabbaca", indo: "membaca", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Mabbaca lontara' — Membaca lontara." },
+      { bugis: "maroki'", indo: "menulis", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Maroki' sure' — Menulis surat." },
+      { bugis: "magguru", indo: "belajar", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Magguru Basa Ugi — Belajar bahasa Bugis." },
+      { bugis: "mappagguru", indo: "mengajar", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Guru mappagguru — Guru mengajar." },
+      { bugis: "majjama", indo: "bekerja", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Majjama ri galung-e — Bekerja di sawah." },
+      { bugis: "melli", indo: "membeli", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Melli bale — Membeli ikan." },
+      { bugis: "mappabalu'", indo: "menjual", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Mappabalu' nanre — Menjual makanan." },
+      { bugis: "mabbere", indo: "memberi", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Mabbere pappoji — Memberi kasih sayang." },
+      { bugis: "mala", indo: "mengambil", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Mala wae — Mengambil air." },
+      { bugis: "taro", indo: "menyimpan, meletakkan", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Taro-i ri mejang-e — Letakkan di meja." },
+      { bugis: "cemme", indo: "mandi", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Lao cemme — Pergi mandi." },
+      { bugis: "muttama'", indo: "masuk", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Muttama'-ki' ri laleng bola — Silakan masuk ke dalam rumah." },
+      { bugis: "messu'", indo: "keluar", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Messu'-ni pole bola-e — Dia sudah keluar dari rumah." },
+      { bugis: "menre'", indo: "naik", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Menre' ri bulu'-e — Naik ke gunung." },
+      { bugis: "nonno'", indo: "turun", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Nonno' ri tana-e — Turun ke tanah." },
+      { bugis: "macawa", indo: "tertawa", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Macawa marennu — Tertawa gembira." },
+      { bugis: "cabberu", indo: "tersenyum", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Cabberu macenning — Tersenyum manis." },
+      { bugis: "teri", indo: "menangis", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Aja' muteri — Jangan menangis." },
+      { bugis: "maelo'", indo: "mau, ingin", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Maelo-ka' magguru — Saya ingin belajar." },
+      { bugis: "isseng", indo: "tahu, mengetahui", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "De' uwisseng-i — Saya tidak mengetahuinya." },
+      { bugis: "engkalinga", indo: "dengar", cat: "Kata Kerja", src: "M. Ide Said DM", ex: "Engkalinga-i ada-na — Dengarkan perkataannya." },
+
+      // --- KATA SIFAT (ADJEKTIVA) ---
+      { bugis: "madeceng", indo: "baik, bagus", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Ati madeceng — Hati yang baik." },
+      { bugis: "makanja'", indo: "bagus, indah, cantik", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Makanja' senna' — Sangat bagus/indah." },
+      { bugis: "maja'", indo: "buruk, jelek, rusak", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Sipa' maja' — Sifat yang buruk." },
+      { bugis: "battowa", indo: "besar", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Bola battowa — Rumah besar." },
+      { bugis: "baiccu'", indo: "kecil", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Ana' baiccu' — Anak kecil." },
+      { bugis: "maega", indo: "banyak", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Maega tau — Banyak orang." },
+      { bugis: "cedde'", indo: "sedikit", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Cedde' bawang — Sedikit saja." },
+      { bugis: "macacca", indo: "pintar, cerdas", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Tau macacca — Orang cerdas." },
+      { bugis: "makuttu", indo: "malas", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Aja' mumakuttu — Jangan malas." },
+      { bugis: "majjelleng", indo: "rajin", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Majjelleng magguru — Rajin belajar." },
+      { bugis: "matanre", indo: "tinggi", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Aju matanre — Pohon tinggi." },
+      { bugis: "maponco'", indo: "pendek", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Tulu' maponco' — Tali pendek." },
+      { bugis: "malampé", indo: "panjang", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Laleng malampé — Jalan panjang." },
+      { bugis: "mabela", indo: "jauh", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Mabela senna' — Sangat jauh." },
+      { bugis: "macawe'", indo: "dekat", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Macawe' pole kota-e — Dekat dari kota." },
+      { bugis: "mapella", indo: "panas", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Esso mapella — Hari panas." },
+      { bugis: "makecce'", indo: "dingin", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Wae makecce' — Air dingin." },
+      { bugis: "macenning", indo: "manis", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Golla macenning — Gula manis." },
+      { bugis: "mapai'", indo: "pahit", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Pabura mapai' — Obat pahit." },
+      { bugis: "masuli'", indo: "mahal", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Masuli' elli-na — Mahal harganya." },
+      { bugis: "masempo", indo: "murah", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Masempo elli-na — Murah harganya." },
+      { bugis: "masitta'", indo: "cepat", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Masitta'-ko pole — Cepatlah datang." },
+      { bugis: "maddare'", indo: "lambat, pelan", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Maddare' jokka-na — Lambat jalannya." },
+      { bugis: "mapaccing", indo: "bersih, suci", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Ati mapaccing — Hati yang bersih." },
+      { bugis: "marota'", indo: "kotor", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Waju marota' — Baju kotor." },
+      { bugis: "maluppu", indo: "lapar", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Maluppu-ka' — Saya lapar." },
+      { bugis: "madekka", indo: "haus", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Madekka-ka' — Saya haus." },
+      { bugis: "marennu", indo: "gembira, bahagia", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Marennu ati-ku — Hatiku gembira." },
+      { bugis: "masara", indo: "sedih, berduka", cat: "Kata Sifat", src: "M. Ide Said DM", ex: "Masara nyawa-na — Sedih hatinya." },
+
+      // --- KATA BENDA & ALAM ---
+      { bugis: "bola", indo: "rumah", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Bola Ugi — Rumah Bugis." },
+      { bugis: "wae", indo: "air", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Wae mata — Air mata." },
+      { bugis: "api", indo: "api", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Tunu api — Menyalakan api." },
+      { bugis: "tana", indo: "tanah, negeri", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Tana Ugi — Tanah Bugis." },
+      { bugis: "angin", indo: "angin", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Angin mamiri — Angin berhembus." },
+      { bugis: "bosi", indo: "hujan", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Turung bosi — Turun hujan." },
+      { bugis: "esso", indo: "hari, matahari", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Esso iye' — Hari ini." },
+      { bugis: "uleng", indo: "bulan", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Uleng purnama — Bulan purnama." },
+      { bugis: "wettoing", indo: "bintang", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Wettoing ri langi'-e — Bintang di langit." },
+      { bugis: "langi'", indo: "langit", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Langi' mapaccing — Langit cerah." },
+      { bugis: "tasi'", indo: "laut", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Lao ri tasi'-e — Pergi ke laut." },
+      { bugis: "salu", indo: "sungai", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Salu battowa — Sungai besar." },
+      { bugis: "bulu'", indo: "gunung, bukit", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Bulu' Bawakaraeng — Gunung Bawakaraeng." },
+      { bugis: "galung", indo: "sawah", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Ase ri galung-e — Padi di sawah." },
+      { bugis: "ase", indo: "padi, beras", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Mappanen ase — Memanen padi." },
+      { bugis: "inanre", indo: "nasi, makanan", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Manre inanre — Makan nasi." },
+      { bugis: "bale", indo: "ikan", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Bale tunu — Ikan bakar." },
+      { bugis: "aju", indo: "kayu, pohon", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Raung aju — Daun pohon." },
+      { bugis: "bunga", indo: "bunga", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Bunga mabau — Bunga harum." },
+      { bugis: "kitta'", indo: "kitab, buku", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Mabbaca kitta' — Membaca buku." },
+      { bugis: "pasa'", indo: "pasar", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Lao ri pasa'-e — Pergi ke pasar." },
+      { bugis: "doi'", indo: "uang", cat: "Kata Benda", src: "M. Ide Said DM", ex: "Doi' menre' — Uang panai." },
+
+      // --- SASTRA, PERASAAN & FILOSOFI BUGIS ---
+      { bugis: "siri'", indo: "harga diri, rasa malu dan martabat", cat: "Sastra & Filosofi", src: "B.F. Matthes", ex: "Siri' na pesse — Harga diri dan empati kemanusiaan." },
+      { bugis: "pesse", indo: "empati, rasa pedih bersama sesama", cat: "Sastra & Filosofi", src: "B.F. Matthes", ex: "Pesse babua — Rasa sepenanggungan." },
+      { bugis: "lempu'", indo: "kejujuran, kelurusan hati", cat: "Sastra & Filosofi", src: "B.F. Matthes", ex: "Lempu' na acca — Kejujuran dan kecendekiaan." },
+      { bugis: "getteng", indo: "keteguhan prinsip, konsistensi", cat: "Sastra & Filosofi", src: "B.F. Matthes", ex: "Getteng ri ada tongeng — Teguh pada kebenaran." },
+      { bugis: "ada tongeng", indo: "perkataan yang benar, kebenaran", cat: "Sastra & Filosofi", src: "B.F. Matthes", ex: "Mabbicara ada tongeng — Berbicara kebenaran." },
+      { bugis: "reso", indo: "kerja keras, ikhtiar", cat: "Sastra & Filosofi", src: "B.F. Matthes", ex: "Resopa temmangingngi namalomo naletei pammase Dewata — Hanya kerja keras tanpa henti yang mudah diridai Tuhan." },
+      { bugis: "pappoji", indo: "cinta, kasih sayang, rasa suka", cat: "Sastra & Filosofi", src: "M. Ide Said DM", ex: "Pappoji tongeng — Cinta sejati." },
+      { bugis: "uddani", indo: "rindu, kerinduan mendalam", cat: "Sastra & Filosofi", src: "M. Ide Said DM", ex: "Uddani ri kampong — Rindu pada kampung halaman." },
+      { bugis: "sengereng", indo: "kenangan, ingatan", cat: "Sastra & Filosofi", src: "M. Ide Said DM", ex: "Sengereng madeceng — Kenangan indah." },
+      { bugis: "ati", indo: "hati, kalbu", cat: "Sastra & Filosofi", src: "M. Ide Said DM", ex: "Peddi ati — Sakit hati / luka batin." },
+      { bugis: "nyawa", indo: "jiwa, nyawa, perasaan", cat: "Sastra & Filosofi", src: "M. Ide Said DM", ex: "Macenning nyawa — Baik budi / ramah." },
+      { bugis: "pappaseng", indo: "pesan leluhur, wasiat bijak", cat: "Sastra & Filosofi", src: "B.F. Matthes", ex: "Pappaseng tau riolo — Pesan orang-orang terdahulu." },
+
+      // --- BILANGAN & WAKTU ---
+      { bugis: "seddi", indo: "satu", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Seddi tau — Satu orang." },
+      { bugis: "dua", indo: "dua", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Dua esso — Dua hari." },
+      { bugis: "tellu", indo: "tiga", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Tellu uleng — Tiga bulan." },
+      { bugis: "eppa'", indo: "empat", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Eppa' sulapa' — Empat penjuru (Sulapa Eppa')." },
+      { bugis: "lima", indo: "lima; tangan", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Lima jari — Lima jari." },
+      { bugis: "enneng", indo: "enam", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Enneng taung — Enam tahun." },
+      { bugis: "pitu", indo: "tujuh", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Pitu lapi' langi' — Tujuh lapis langit." },
+      { bugis: "arua", indo: "delapan", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Arua bola — Delapan rumah." },
+      { bugis: "asera", indo: "sembilan", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Asera essona — Hari kesembilan." },
+      { bugis: "seppulo", indo: "sepuluh", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Seppulo seddi — Sebelas." },
+      { bugis: "ele'", indo: "pagi", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Ele' iye' — Pagi ini." },
+      { bugis: "tangasso", indo: "siang, tengah hari", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Manre tangasso — Makan siang." },
+      { bugis: "araweng", indo: "sore, petang", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Araweng iye' — Sore ini." },
+      { bugis: "wenni", indo: "malam", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Wenni iye' — Malam ini." },
+      { bugis: "baja", indo: "besok", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Baja ele' — Besok pagi." },
+      { bugis: "iwenni", indo: "kemarin", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Pole-i iwennni — Dia datang kemarin." },
+      { bugis: "makkokkoe", indo: "sekarang, saat ini", cat: "Bilangan & Waktu", src: "M. Ide Said DM", ex: "Makkokkoe mupa — Sekarang juga." }
+    ];
+
+    // ==================== 3. PAKET KORPUS EKSTERNAL (MULTI-SUMBER) ====================
+    const CORPUS_PACKS = [
+      {
+        id: "pack_sastra",
+        title: "Korpus Sastra & Lontara Klasik",
+        desc: "20 kosakata puitis & sastra Bugis dari naskah Lontara & B.F. Matthes.",
+        words: [
+          { bugis: "salama'", indo: "selamat, sejahtera", cat: "Sastra & Filosofi", src: "Korpus Eksternal", ex: "Salama' pole — Selamat datang." },
+          { bugis: "mappesona", indo: "berserah diri, tawakal", cat: "Sastra & Filosofi", src: "Korpus Eksternal", ex: "Mappesona ri Puang Allah Taala — Berserah diri kepada Tuhan." },
+          { bugis: "asitinajang", indo: "kepatutan, kelayakan", cat: "Sastra & Filosofi", src: "Korpus Eksternal", ex: "Gau' asitinajang — Perbuatan yang patut." },
+          { bugis: "warani", indo: "berani, pemberani", cat: "Kata Sifat", src: "Korpus Eksternal", ex: "Tau warani — Orang pemberani." },
+          { bugis: "acca", indo: "kecerdasan, kepandaian", cat: "Sastra & Filosofi", src: "Korpus Eksternal", ex: "Acca na lempu' — Kepandaian dan kejujuran." },
+          { bugis: "botting", indo: "pengantin, pernikahan", cat: "Kata Benda", src: "Korpus Eksternal", ex: "Esso botting — Hari pernikahan." },
+          { bugis: "lipa' sabbe", indo: "sarung sutra Bugis", cat: "Kata Benda", src: "Korpus Eksternal", ex: "Mappake lipa' sabbe — Memakai sarung sutra." },
+          { bugis: "pinisi", indo: "perahu layar tradisional Bugis-Makassar", cat: "Kata Benda", src: "Korpus Eksternal", ex: "Lopi pinisi — Perahu pinisi." },
+          { bugis: "sompe'", indo: "berlayar, merantau", cat: "Kata Kerja", src: "Korpus Eksternal", ex: "Lao sompe' ri tana mabéla — Pergi merantau ke negeri jauh." },
+          { bugis: "pasompe'", indo: "perantau, pelaut", cat: "Kata Benda", src: "Korpus Eksternal", ex: "Ana' pasompe' — Anak perantau." }
+        ]
+      },
+      {
+        id: "pack_medsos",
+        title: "Korpus Percakapan Harian & Media Sosial",
+        desc: "15 ungkapan komunikatif yang sering muncul dalam tulisan & percakapan modern.",
+        words: [
+          { bugis: "aga gau'", indo: "sedang apa / apa yang dikerjakan", cat: "Korpus Tambahan", src: "Korpus Eksternal", ex: "Aga gau' mu-jama makkokkoe? — Sedang apa kamu sekarang?" },
+          { bugis: "marilaleng", indo: "mendalam (perasaan/makna)", cat: "Kata Sifat", src: "Korpus Eksternal", ex: "Bettuang marilaleng — Makna yang mendalam." },
+          { bugis: "sipakatau", indo: "saling memanusiakan, saling menghormati", cat: "Sastra & Filosofi", src: "Korpus Eksternal", ex: "Sipakatau, sipakalebbi, sipakainge' — Saling menghormati, memuliakan, mengingatkan." },
+          { bugis: "sipakalebbi", indo: "saling memuliakan", cat: "Sastra & Filosofi", src: "Korpus Eksternal", ex: "Ada sipakalebbi — Tutur kata yang saling memuliakan." },
+          { bugis: "sipakainge'", indo: "saling mengingatkan", cat: "Sastra & Filosofi", src: "Korpus Eksternal", ex: "Wajib-ki' sipakainge' — Kita wajib saling mengingatkan." },
+          { bugis: "mappoji ladde'", indo: "sangat menyukai / sangat mencintai", cat: "Korpus Tambahan", src: "Korpus Eksternal", ex: "Mappoji ladde'-ka' mabbaca — Saya sangat suka membaca." },
+          { bugis: "makessing", indo: "bagus sekali, rapi, elok", cat: "Kata Sifat", src: "Korpus Eksternal", ex: "Makessing senna' roki'-na — Bagus sekali tulisannya." },
+          { bugis: "aja' mutajeng", indo: "jangan menunggu", cat: "Korpus Tambahan", src: "Korpus Eksternal", ex: "Lao-no riolo, aja' mutajeng — Pergilah duluan, jangan menunggu." }
+        ]
+      }
+    ];
+
+    // ==================== 4. FRASA PENERJEMAH KALIMAT ====================
+    const PHRASE_RULES = [
+      { id: "apa kabar", bug: "aga kareba" },
+      { id: "kabar baik", bug: "kareba madeceng" },
+      { id: "terima kasih banyak", bug: "tarima kasi maega" },
+      { id: "terima kasih", bug: "tarima kasi" },
+      { id: "maafkan saya", bug: "addampengengnga'" },
+      { id: "di dalam", bug: "ri laleng" },
+      { id: "di luar", bug: "ri salipeng" },
+      { id: "di atas", bug: "ri ase'" },
+      { id: "di bawah", bug: "ri awa" },
+      { id: "di depan", bug: "ri olo" },
+      { id: "di belakang", bug: "ri munri" },
+      { id: "mau lewat", bug: "maelo' lalo" },
+      { id: "saya mau", bug: "maeloka'" },
+      { id: "saya ingin", bug: "maeloka'" },
+      { id: "saya tidak tahu", bug: "de' uwisseng-i" },
+      { id: "tidak ada", bug: "de' na-engka" },
+      { id: "hari ini", bug: "esso iye'" },
+      { id: "pagi ini", bug: "ele' iye'" },
+      { id: "malam ini", bug: "wenni iye'" },
+      { id: "besok pagi", bug: "baja ele'" },
+      { id: "jangan menangis", bug: "aja' muteri" },
+      { id: "jangan malas", bug: "aja' mumakuttu" },
+      { id: "selamat datang", bug: "salama' pole" },
+      { id: "rumah", bug: "bola" },
+      { id: "saya", bug: "iyya'" },
+      { id: "aku", bug: "iyya'" },
+      { id: "kamu", bug: "iko" },
+      { id: "anda", bug: "idi'" },
+      { id: "dia", bug: "alena" },
+      { id: "mereka", bug: "mennang" },
+      { id: "ibu", bug: "indo'" },
+      { id: "ayah", bug: "ambo'" },
+      { id: "saudara", bug: "silessureng" },
+      { id: "teman", bug: "sellao" },
+      { id: "permisi", bug: "tabe'" },
+      { id: "ada", bug: "engka" },
+      { id: "dalam", bug: "laleng" },
+      { id: "lewat", bug: "lalo" },
+      { id: "melintas", bug: "mallalo" },
+      { id: "pergi", bug: "lao" },
+      { id: "pulang", bug: "lisu" },
+      { id: "datang", bug: "pole" },
+      { id: "makan", bug: "manre" },
+      { id: "minum", bug: "minung" },
+      { id: "tidur", bug: "mattinro" },
+      { id: "duduk", bug: "tudang" },
+      { id: "berdiri", bug: "tettong" },
+      { id: "membaca", bug: "mabbaca" },
+      { id: "menulis", bug: "maroki'" },
+      { id: "belajar", bug: "magguru" },
+      { id: "baik", bug: "madeceng" },
+      { id: "bagus", bug: "makanja'" },
+      { id: "besar", bug: "battowa" },
+      { id: "kecil", bug: "baiccu'" },
+      { id: "banyak", bug: "maega" },
+      { id: "sedikit", bug: "cedde'" },
+      { id: "pintar", bug: "macacca" },
+      { id: "air", bug: "wae" },
+      { id: "nasi", bug: "inanre" },
+      { id: "ikan", bug: "bale" },
+      { id: "gunung", bug: "bulu'" },
+      { id: "laut", bug: "tasi'" },
+      { id: "hujan", bug: "bosi" },
+      { id: "sebentar", bug: "cinampe'" },
+      { id: "sekarang", bug: "makkokkoe" }
+    ];
+
+    const SAMPLE_CONVERSATIONS = [
+      { bugis: "Tabe', maeloka' lalo ri yolota'.", indo: "Permisi, saya mau lewat di depan Anda." },
+      { bugis: "Indo' engka ri laleng bola.", indo: "Ibu ada di dalam rumah." },
+      { bugis: "Aga kareba silessureng? Kareba madeceng.", indo: "Apa kabar saudara? Kabar baik." },
+      { bugis: "Maeloka' lao ri pasa' melli bale.", indo: "Saya mau pergi ke pasar membeli ikan." },
+      { bugis: "Sipakatau, sipakalebbi, sipakainge'.", indo: "Saling memanusiakan, saling memuliakan, saling mengingatkan." },
+      { bugis: "Tarima kasi maega, addampengengnga'.", indo: "Terima kasih banyak, maafkan saya." }
+    ];
+
+    // ==================== 5. STATE & STORAGE ====================
+    let dictionary = [];
+    let selectedLetter = 'ALL';
+    let quizScore = 0;
+    let currentQuiz = null;
+
+    function initApp() {
+      const saved = localStorage.getItem('kamus_bugis_ama_v1');
+      if (saved) {
+        try {
+          dictionary = JSON.parse(saved);
+        } catch (e) {
+          dictionary = [...CORE_DICTIONARY];
+        }
+      } else {
+        dictionary = [...CORE_DICTIONARY];
+        saveToStorage();
+      }
+
+      renderAlphabetBar();
+      renderKamus();
+      renderPhraseList();
+      renderCorpusPacks();
+      nextQuizQuestion();
+    }
+
+    function saveToStorage() {
+      localStorage.setItem('kamus_bugis_ama_v1', JSON.stringify(dictionary));
+      document.getElementById('totalBadge').textContent = `${dictionary.length} Entri Leksikon`;
+    }
+
+    // ==================== 6. NAVIGASI TAB ====================
+    function switchTab(tabName) {
+      ['kamus', 'penerjemah', 'sinkron', 'kuis'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        const btn = document.getElementById(`btn-tab-${t}`);
+        btn.classList.remove('tab-active');
+        btn.classList.add('text-slate-300');
+      });
+      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`btn-tab-${tabName}`);
+      activeBtn.classList.add('tab-active');
+      activeBtn.classList.remove('text-slate-300');
+    }
+
+    // ==================== 7. RENDER KAMUS ====================
+    function renderAlphabetBar() {
+      const bar = document.getElementById('alphabetBar');
+      const letters = ['ALL', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+      bar.innerHTML = letters.map(l => `
+        <button onclick="setLetter('${l}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${selectedLetter === l ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+          ${l === 'ALL' ? 'Semua' : l}
+        </button>
+      `).join('');
+    }
+
+    function setLetter(l) {
+      selectedLetter = l;
+      renderAlphabetBar();
+      renderKamus();
+    }
+
+    function renderKamus() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const cat = document.getElementById('categoryFilter').value;
+      const src = document.getElementById('sourceFilter').value;
+
+      const filtered = dictionary.filter(item => {
+        const matchQuery = !query || item.bugis.toLowerCase().includes(query) || item.indo.toLowerCase().includes(query);
+        const matchCat = cat === 'ALL' || item.cat === cat;
+        const matchSrc = src === 'ALL' || item.src === src;
+        const matchLetter = selectedLetter === 'ALL' || item.bugis.toUpperCase().startsWith(selectedLetter);
+        return matchQuery && matchCat && matchSrc && matchLetter;
+      });
+
+      document.getElementById('resultCount').textContent = `Menampilkan ${filtered.length} dari ${dictionary.length} kosakata terverifikasi`;
+      document.getElementById('totalBadge').textContent = `${dictionary.length} Entri Leksikon`;
+
+      const grid = document.getElementById('kamusGrid');
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500 text-sm">Kosakata tidak ditemukan. Gunakan tombol <strong>+ Tambah Entri Manual</strong> untuk menambahkannya ke database pribadi Anda.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => {
+        const lontara = latinToLontara(item.bugis);
+        return `
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-emerald-400 shadow-sm transition flex flex-col justify-between gap-3">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="px-2 py-0.5 text-[11px] font-bold bg-emerald-50 text-emerald-700 rounded-md">${item.cat}</span>
+                <span class="text-[11px] text-slate-400 font-medium">${item.src}</span>
+              </div>
+              <div class="flex items-baseline justify-between gap-2">
+                <h3 class="text-lg font-extrabold text-slate-900">${item.bugis}</h3>
+                <span class="font-lontara text-xl text-emerald-700 font-normal">${lontara}</span>
+              </div>
+              <p class="text-sm font-semibold text-slate-700 mt-1">${item.indo}</p>
+              ${item.ex ? `<p class="text-xs text-slate-500 italic mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">"${item.ex}"</p>` : ''}
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+              <button onclick="speakWord('${item.bugis.replace(/'/g, "\\'")}')" class="text-xs font-bold text-slate-600 hover:text-emerald-700">🔊 Lafalkan</button>
+              <button onclick="navigator.clipboard.writeText('${lontara}'); alert('Aksara Lontara disalin: ${lontara}')" class="text-xs font-bold text-emerald-700 hover:underline">📋 Salin Lontara</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==================== 8. MESIN PENERJEMAH MULTI-KALIMAT ====================
+    function runTranslator() {
+      const input = document.getElementById('translatorInput').value;
+      const dir = document.getElementById('translateDirection').value;
+      if (!input.trim()) {
+        document.getElementById('translatedLatin').textContent = 'Hasil terjemahan akan muncul di sini...';
+        document.getElementById('translatedLontara').textContent = 'ᨔᨒᨆ ᨆᨒᨛᨇᨘ';
+        document.getElementById('wordBreakdown').innerHTML = 'Ketik kalimat di atas untuk melihat rincian terjemahan setiap kata dan frasa.';
+        return;
+      }
+
+      const lines = input.split('\n');
+      let breakdownItems = [];
+
+      // Gabungkan aturan frasa bawaan + kamus dinamis
+      let dynamicRules = [...PHRASE_RULES];
+      dictionary.forEach(entry => {
+        const cleanIndo = entry.indo.split(/[;,]/)[0].trim().toLowerCase();
+        const cleanBug = entry.bugis.trim().toLowerCase();
+        if (cleanIndo && cleanBug) {
+          dynamicRules.push({ id: cleanIndo, bug: cleanBug });
+        }
+      });
+
+      // Urutkan dari frasa terpanjang agar frasa majemuk diterjemahkan lebih dulu
+      dynamicRules.sort((a, b) => (dir === 'ID_TO_BUG' ? b.id.length - a.id.length : b.bug.length - a.bug.length));
+
+      const translatedLines = lines.map(line => {
+        let result = line;
+        if (dir === 'ID_TO_BUG') {
+          dynamicRules.forEach(rule => {
+            const escaped = rule.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+            if (regex.test(result)) {
+              breakdownItems.push(`<span class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg"><strong>${rule.id}</strong> ➔ <span class="text-emerald-700 font-bold">${rule.bug}</span> (<span class="font-lontara">${latinToLontara(rule.bug)}</span>)</span>`);
+              result = result.replace(regex, rule.bug);
+            }
+          });
+        } else {
+          dynamicRules.forEach(rule => {
+            const escaped = rule.bug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(^|\\s)${escaped}(?=\\s|[.,!?]|$)`, 'gi');
+            if (regex.test(result)) {
+              breakdownItems.push(`<span class="px-2.5 py-1 bg-white border border-slate-200 rounded-lg"><strong>${rule.bug}</strong> ➔ <span class="text-emerald-700 font-bold">${rule.id}</span></span>`);
+              result = result.replace(regex, `$1${rule.id}`);
+            }
+          });
+        }
+        return result;
+      });
+
+      const finalLatin = translatedLines.join('\n');
+      const bugisSourceForLontara = dir === 'ID_TO_BUG' ? finalLatin : input;
+
+      document.getElementById('translatedLatin').textContent = finalLatin;
+      document.getElementById('translatedLontara').textContent = latinToLontara(bugisSourceForLontara);
+      document.getElementById('wordBreakdown').innerHTML = breakdownItems.length > 0
+        ? [...new Set(breakdownItems)].join('')
+        : 'Tidak ada frasa khusus yang cocok; menampilkan transkripsi langsung ke Aksara Lontara.';
+    }
+
+    function loadSampleParagraph() {
+      document.getElementById('translateDirection').value = 'ID_TO_BUG';
+      document.getElementById('translatorInput').value =
+        "Apa kabar saudara?\nIbu ada di dalam rumah.\nPermisi, saya mau lewat sebentar.\nTerima kasih banyak.";
+      runTranslator();
+    }
+
+    function renderPhraseList() {
+      const container = document.getElementById('phraseList');
+      container.innerHTML = SAMPLE_CONVERSATIONS.map(p => `
+        <div onclick="document.getElementById('translateDirection').value='BUG_TO_ID'; document.getElementById('translatorInput').value='${p.bugis.replace(/'/g, "\\'")}'; runTranslator(); window.scrollTo({top:0, behavior:'smooth'});" class="cursor-pointer p-3.5 rounded-xl border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/40 transition">
+          <div class="font-bold text-sm text-slate-900">${p.bugis}</div>
+          <div class="font-lontara text-lg text-emerald-700">${latinToLontara(p.bugis)}</div>
+          <div class="text-xs text-slate-500 mt-0.5">${p.indo}</div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== 9. SINKRONISASI KORPUS, GOOGLE & REKAMAN ====================
+    function renderCorpusPacks() {
+      const container = document.getElementById('corpusPacksContainer');
+      container.innerHTML = CORPUS_PACKS.map(pack => `
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h4 class="font-bold text-sm text-slate-900">${pack.title}</h4>
+            <p class="text-xs text-slate-500">${pack.desc}</p>
+          </div>
+          <button onclick="installCorpusPack('${pack.id}')" class="shrink-0 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition">
+            + Sinkronkan (${pack.words.length} Kata)
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function installCorpusPack(packId) {
+      const pack = CORPUS_PACKS.find(p => p.id === packId);
+      if (!pack) return;
+      let added = 0;
+      pack.words.forEach(w => {
+        if (!dictionary.some(existing => existing.bugis.toLowerCase() === w.bugis.toLowerCase())) {
+          dictionary.unshift(w);
+          added++;
+        }
+      });
+      saveToStorage();
+      renderKamus();
+      alert(`Berhasil menyinkronkan ${added} kosakata baru dari "${pack.title}". Total kamus: ${dictionary.length} entri.`);
+    }
+
+    async function syncFromExternalUrl() {
+      const url = document.getElementById('externalUrlInput').value.trim();
+      const status = document.getElementById('syncStatusMsg');
+      if (!url) {
+        status.textContent = 'Masukkan URL Google Sheets (.csv) atau file .json terlebih dahulu.';
+        return;
+      }
+      status.textContent = 'Sedang mengambil dan menyinkronkan data...';
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        let imported = [];
+        if (text.trim().startsWith('[') || text.trim().startsWith('{')) {
+          const json = JSON.parse(text);
+          imported = Array.isArray(json) ? json : (json.words || []);
+        } else {
+          // Parse CSV sederhana: bugis,indo,kategori,contoh
+          const rows = text.split('\n').slice(1);
+          rows.forEach(r => {
+            const cols = r.split(',');
+            if (cols.length >= 2 && cols[0].trim()) {
+              imported.push({
+                bugis: cols[0].trim(),
+                indo: cols[1].trim(),
+                cat: (cols[2] || 'Korpus Tambahan').trim(),
+                src: 'Korpus Eksternal',
+                ex: (cols[3] || '').trim()
+              });
+            }
+          });
+        }
+        let added = 0;
+        imported.forEach(item => {
+          if (item.bugis && item.indo && !dictionary.some(d => d.bugis.toLowerCase() === item.bugis.toLowerCase())) {
+            dictionary.unshift({
+              bugis: item.bugis,
+              indo: item.indo,
+              cat: item.cat || 'Korpus Tambahan',
+              src: 'Korpus Eksternal',
+              ex: item.ex || ''
+            });
+            added++;
+          }
+        });
+        saveToStorage();
+        renderKamus();
+        status.textContent = `Sukses! ${added} kosakata baru disinkronkan dari tautan eksternal.`;
+      } catch (err) {
+        status.textContent = 'Gagal mengakses URL (pastikan Google Sheets sudah di-Publish to Web sebagai CSV publik).';
+      }
+    }
+
+    function exportDatabaseJSON() {
+      const blob = new Blob([JSON.stringify(dictionary, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'kamus-bahasa-bugis-ahmad-musyahid-ahsan.json';
+      a.click();
+    }
+
+    function searchExternalReference(engine) {
+      const q = document.getElementById('googleVerifyInput').value.trim();
+      if (!q) return alert('Ketik kata yang ingin diverifikasi terlebih dahulu.');
+      const encoded = encodeURIComponent(`"bahasa bugis" "${q}"`);
+      let targetUrl = `https://www.google.com/search?q=${encoded}`;
+      if (engine === 'scholar') targetUrl = `https://scholar.google.com/scholar?q=${encoded}`;
+      if (engine === 'wiki') targetUrl = `https://bug.wikipedia.org/w/index.php?search=${encodeURIComponent(q)}`;
+      window.open(targetUrl, '_blank');
+    }
+
+    function extractNewWordsFromText() {
+      const raw = document.getElementById('rawCorpusText').value;
+      const container = document.getElementById('extractedWordsResult');
+      if (!raw.trim()) return;
+      const tokens = [...new Set(raw.toLowerCase().replace(/[^a-zA-Z'é\s-]/g, ' ').split(/\s+/).filter(w => w.length > 2))];
+      const newTokens = tokens.filter(t => !dictionary.some(d => d.bugis.toLowerCase() === t));
+
+      if (newTokens.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-xs text-emerald-700 font-semibold">Semua kata dalam teks tersebut sudah terdaftar di dalam kamus Anda!</div>`;
+        return;
+      }
+
+      container.innerHTML = newTokens.map(word => `
+        <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-2">
+          <div>
+            <div class="font-bold text-sm text-slate-900">${word}</div>
+            <div class="font-lontara text-base text-emerald-700">${latinToLontara(word)}</div>
+          </div>
+          <button onclick="quickAddExtracted('${word}')" class="px-2.5 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg">+ Simpan</button>
+        </div>
+      `).join('');
+    }
+
+    function quickAddExtracted(word) {
+      const meaning = prompt(`Masukkan arti Bahasa Indonesia untuk kata Bugis "${word}":`);
+      if (!meaning || !meaning.trim()) return;
+      dictionary.unshift({
+        bugis: word,
+        indo: meaning.trim(),
+        cat: 'Korpus Tambahan',
+        src: 'Korpus Eksternal',
+        ex: ''
+      });
+      saveToStorage();
+      renderKamus();
+      extractNewWordsFromText();
+    }
+
+    // ==================== 10. REKAMAN SUARA & AUDIO ====================
+    function startVoiceInput(targetElementId) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Browser Anda belum mendukung fitur dikte suara langsung. Gunakan Google Chrome atau Microsoft Edge versi terbaru.');
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'id-ID';
+      recognition.interimResults = false;
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const el = document.getElementById(targetElementId);
+        el.value = (el.value ? el.value + '\n' : '') + transcript;
+        if (targetElementId === 'translatorInput') runTranslator();
+      };
+      recognition.start();
+    }
+
+    function speakWord(text) {
+      if (!('speechSynthesis' in window)) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'id-ID';
+      utter.rate = 0.9;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function copyText(elementId) {
+      const txt = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(txt);
+      alert('Teks berhasil disalin ke clipboard!');
+    }
+
+    // ==================== 11. MODAL TAMBAH MANUAL ====================
+    function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
+    function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); }
+    function previewNewLontara() {
+      const val = document.getElementById('newBugis').value;
+      document.getElementById('newLontaraPreview').textContent = val ? latinToLontara(val) : '-';
+    }
+    function saveNewWord() {
+      const bugis = document.getElementById('newBugis').value.trim();
+      const indo = document.getElementById('newIndo').value.trim();
+      const cat = document.getElementById('newCategory').value;
+      const ex = document.getElementById('newExample').value.trim();
+      if (!bugis || !indo) return alert('Kata Bugis dan arti Indonesia wajib diisi.');
+      dictionary.unshift({ bugis, indo, cat, src: 'Korpus Eksternal', ex });
+      saveToStorage();
+      renderKamus();
+      closeAddModal();
+      document.getElementById('newBugis').value = '';
+      document.getElementById('newIndo').value = '';
+      document.getElementById('newExample').value = '';
+    }
+
+    // ==================== 12. KUIS INTERAKTIF ====================
+    function nextQuizQuestion() {
+      if (dictionary.length < 4) return;
+      const correct = dictionary[Math.floor(Math.random() * dictionary.length)];
+      let options = [correct];
+      while (options.length < 4) {
+        const candidate = dictionary[Math.floor(Math.random() * dictionary.length)];
+        if (!options.some(o => o.bugis === candidate.bugis)) options.push(candidate);
+      }
+      options.sort(() => Math.random() - 0.5);
+      currentQuiz = { correct, options };
+
+      document.getElementById('quizQuestionBugis').textContent = correct.bugis;
+      document.getElementById('quizQuestionLontara').textContent = latinToLontara(correct.bugis);
+      document.getElementById('quizFeedback').textContent = '';
+
+      document.getElementById('quizOptions').innerHTML = options.map(opt => `
+        <button onclick="checkQuizAnswer('${opt.bugis.replace(/'/g, "\\'")}')" class="w-full p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 font-semibold text-sm text-slate-800 transition">
+          ${opt.indo}
+        </button>
+      `).join('');
+    }
+
+    function checkQuizAnswer(selectedBugis) {
+      const fb = document.getElementById('quizFeedback');
+      if (selectedBugis === currentQuiz.correct.bugis) {
+        quizScore += 10;
+        document.getElementById('quizScoreBadge').textContent = `Skor: ${quizScore}`;
+        fb.className = 'text-sm font-bold text-emerald-700';
+        fb.textContent = `✅ Tepat! "${currentQuiz.correct.bugis}" berarti "${currentQuiz.correct.indo}".`;
+      } else {
+        fb.className = 'text-sm font-bold text-rose-600';
+        fb.textContent = `❌ Kurang tepat. Jawaban yang benar adalah: "${currentQuiz.correct.indo}".`;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
